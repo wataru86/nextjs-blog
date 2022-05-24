@@ -4,18 +4,21 @@ import Head from 'next/head'
 import Date from '../../components/date'
 import utilStyles from '../../styles/utils.module.css'
 import { GetStaticProps, GetStaticPaths } from 'next'
+import { buildOgImageUrl } from '../../lib/imgix'
 
 export default function Post({
-  postData
+  postData,
+  ogImageUrl
 }: {
   postData: {
     title: string
     date: string
     contentHtml: string
-  }
+  },
+  ogImageUrl: string,
 }) {
   return (
-    <Layout>
+    <Layout ogImageUrl={ogImageUrl}>
       <Head>
         <title>{postData.title}</title>
       </Head>
@@ -40,9 +43,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const postData = await getPostData(params.id as string)
+  const ogImageUrl = buildOgImageUrl(postData.title)
   return {
     props: {
-      postData
+      postData,
+      ogImageUrl,
     }
   }
 }
